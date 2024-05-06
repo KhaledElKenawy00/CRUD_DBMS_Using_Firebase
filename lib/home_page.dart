@@ -1,3 +1,4 @@
+import 'package:crud/user.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -10,7 +11,14 @@ class HomePage extends StatelessWidget {
           style: ButtonStyle(
               backgroundColor:
                   MaterialStatePropertyAll(Color.fromARGB(236, 0, 0, 255))),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (BuildContext context) => UserPage(),
+              ),
+            );
+          },
           child: Icon(
             Icons.add,
             color: Colors.orange,
