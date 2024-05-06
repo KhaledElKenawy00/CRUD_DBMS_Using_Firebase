@@ -5,6 +5,35 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      floatingActionButton: ElevatedButton(
+          style: ButtonStyle(
+              backgroundColor:
+                  MaterialStatePropertyAll(Color.fromARGB(236, 0, 0, 255))),
+          onPressed: () {},
+          child: Icon(
+            Icons.add,
+            color: Colors.orange,
+          )),
+      appBar: AppBar(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'CRUD',
+              style: TextStyle(
+                color: Colors.blue,
+              ),
+            ),
+            Text(
+              'DBMS',
+              style: TextStyle(
+                color: Colors.orange,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
