@@ -1,4 +1,7 @@
+import 'package:crud/service/databse_manger.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uuid/uuid.dart';
 
 class UserPage extends StatefulWidget {
   @override
@@ -6,6 +9,10 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,6 +59,7 @@ class _UserPageState extends State<UserPage> {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.white),
               child: TextFormField(
+                controller: nameController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                 ),
@@ -80,6 +88,8 @@ class _UserPageState extends State<UserPage> {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.white),
               child: TextFormField(
+                keyboardType: TextInputType.number,
+                controller: ageController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                 ),
@@ -108,6 +118,7 @@ class _UserPageState extends State<UserPage> {
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.white),
               child: TextFormField(
+                controller: countryController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                 ),
@@ -127,7 +138,25 @@ class _UserPageState extends State<UserPage> {
                   ),
                 ),
                 color: Colors.orange,
-                onPressed: () {})
+                onPressed: () async {
+                  String userId = Uuid().v4();
+                  Map<String, dynamic> userMap = {
+                    'id': userId,
+                    'name': nameController.text,
+                    'age': ageController.text,
+                    'country': countryController.text
+                  };
+                  await DataBaseMethod.addUserData(userId, userMap)
+                      .then((value) {
+                    Fluttertoast.showToast(
+                            backgroundColor: Colors.black,
+                            textColor: Colors.white,
+                            msg: 'User has been added successfuly')
+                        .then((value) {
+                      Navigator.pop(context);
+                    });
+                  });
+                })
           ],
         ),
       ),
