@@ -37,12 +37,24 @@ class _HomePageState extends State<HomePage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Name:${documentSnapshot['name']}',
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  color: Colors.orange,
-                                ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Name:${documentSnapshot['name']}',
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      color: Colors.orange,
+                                    ),
+                                  ),
+                                  IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        Icons.edit,
+                                        color: Colors.blue,
+                                      ))
+                                ],
                               ),
                               Text(
                                 'Age:${documentSnapshot['age']}',
