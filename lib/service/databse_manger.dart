@@ -9,4 +9,16 @@ class DataBaseMethod {
   static Future<Stream<QuerySnapshot>> getUserData() async {
     return await FirebaseFirestore.instance.collection('Users').snapshots();
   }
+
+  static updateUserData(
+      String userId, Map<String, dynamic> userMapUpdated) async {
+    return await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .update(userMapUpdated);
+  }
+
+  static delteUser(String userId) async {
+    await FirebaseFirestore.instance.collection('Users').doc(userId).delete();
+  }
 }

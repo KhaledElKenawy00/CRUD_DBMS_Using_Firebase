@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crud/service/databse_manger.dart';
 import 'package:crud/user.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:uuid/uuid.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,6 +13,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
   Stream? userStreem;
   Widget allUserData() {
     return StreamBuilder(
@@ -49,7 +54,16 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                   IconButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        nameController.text =
+                                            documentSnapshot['name'];
+                                        ageController.text =
+                                            documentSnapshot['age'];
+                                        countryController.text =
+                                            documentSnapshot['country'];
+
+                                        editUserData(documentSnapshot['id']);
+                                      },
                                       icon: Icon(
                                         Icons.edit,
                                         color: Colors.blue,
@@ -63,12 +77,34 @@ class _HomePageState extends State<HomePage> {
                                   color: Colors.orange,
                                 ),
                               ),
-                              Text(
-                                'Country:${documentSnapshot['country']}',
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  color: Colors.orange,
-                                ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Country:${documentSnapshot['country']}',
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      color: Colors.blue,
+                                    ),
+                                  ),
+                                  IconButton(
+                                      onPressed: () async {
+                                        await DataBaseMethod.delteUser(
+                                                documentSnapshot['id'])
+                                            .then((value) {
+                                          Fluttertoast.showToast(
+                                              backgroundColor: Colors.black,
+                                              textColor: Colors.white,
+                                              msg:
+                                                  'User has been Deleted successfuly');
+                                        });
+                                      },
+                                      icon: Icon(
+                                        Icons.delete,
+                                        color: Colors.orange,
+                                      ))
+                                ],
                               ),
                             ],
                           ),
@@ -137,4 +173,158 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  Future editUserData(String userId) => showDialog(
+      context: context,
+      builder: (BuildContext) => AlertDialog(
+            content: Container(
+              height: MediaQuery.of(context).size.height / 3 * 1.6,
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      GestureDetector(
+                        child: Icon(Icons.cancel),
+                        onTap: () {
+                          Navigator.pop(context);
+                        },
+                      ),
+                      SizedBox(
+                        width: 50,
+                      ),
+                      Text(
+                        'Edit',
+                        style: TextStyle(color: Colors.blue, fontSize: 22),
+                      ),
+                      Text(
+                        'Details',
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.orange,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      'Name',
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 10),
+                    decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: TextFormField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      'Age',
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 10),
+                    decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      controller: ageController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      'Country',
+                      style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 10),
+                    decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white),
+                    child: TextFormField(
+                      controller: countryController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  MaterialButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Text(
+                        'Update',
+                        style: TextStyle(
+                          fontSize: 25,
+                          color: Colors.blue,
+                        ),
+                      ),
+                      color: Colors.orange,
+                      onPressed: () async {
+                        Map<String, dynamic> userMapUpdated = {
+                          'id': userId,
+                          'name': nameController.text,
+                          'age': ageController.text,
+                          'country': countryController.text
+                        };
+                        await DataBaseMethod.updateUserData(
+                                userId, userMapUpdated)
+                            .then((value) {
+                          Fluttertoast.showToast(
+                                  backgroundColor: Colors.black,
+                                  textColor: Colors.white,
+                                  msg: 'User has been UPdated successfuly')
+                              .then((value) {
+                            Navigator.pop(context);
+                          });
+                        });
+                      })
+                ],
+              ),
+            ),
+          ));
 }
