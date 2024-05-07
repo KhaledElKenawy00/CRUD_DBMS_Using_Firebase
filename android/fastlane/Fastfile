@@ -1,0 +1,18 @@
+
+
+default_platform(:android)
+
+platform :android do
+  sh 'flutter clean'
+  sh 'flutter build apk --flavor prod -t lib/main.dart --no-tree-shake-icons'
+  desc "make an test app using firebase "
+  lane :app do
+    firebase_app_distribution(
+      app: "1:224287915220:android:d3f0b84522ddbad07f4f41",
+      firebase_cli_token:'1//034XSEZwMbtHMCgYIARAAGAMSNwF-L9Ire0l9fdeBGgHeqAZXPCOLhbfrUIfzTjiRcSxH0FQa2rV8KXQALHkIkGvMxbh9HIpM7Hc',
+      android_artifact_path:'../build\app\outputs\flutter-apk\app-prod-release.apk',
+      testers:'KHALED.MOUSTAFA3032@el-eng.menofia.edu.eg'
+    )
+  end
+
+end
